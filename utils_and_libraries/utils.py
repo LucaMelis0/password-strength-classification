@@ -190,3 +190,20 @@ def prepare_features(password_dataset: pd.DataFrame, balance_data: bool = True):
     x = scaler.fit_transform(x)
 
     return x, y, passwords
+
+
+def display_cv_results(cross_validation_metrics: dict):
+    """
+    Display the cross-validation metrics in a DataFrame.
+
+    :param cross_validation_metrics: the cross-validation metrics.
+    """
+    # Convert to DataFrame, transpose, and rename index
+    cross_val_df = pd.DataFrame(cross_validation_metrics).T
+    cross_val_df.columns = ['KFold Iteration: n.1',
+                            'KFold Iteration: n.2',
+                            'KFold Iteration: n.3',
+                            'KFold Iteration: n.4',
+                            'KFold Iteration: n.5']
+    cross_val_df.index = ['Fit Time', 'Score Time', 'Validation Score']
+    display(cross_val_df)
