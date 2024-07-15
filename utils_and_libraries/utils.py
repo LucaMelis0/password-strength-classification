@@ -1,4 +1,4 @@
-from utils_and_libraries.libs import pd, display, math
+from utils_and_libraries.libs import pd, display, math, plt
 
 
 def get_data(dataset_path: str):
@@ -97,3 +97,39 @@ def extract_password_features(data: pd.DataFrame):
         }
 
     return pd.DataFrame.from_dict(parameters_for_each_password, orient='index')
+
+
+
+def display_strength_distribution(data: pd.DataFrame):
+    """Display the distribution of the password strength in the given data."""
+    data['strength'].value_counts().sort_index().plot(kind='bar')
+    plt.title('Password Strength Distribution')
+    plt.xlabel('Strength')
+    plt.ylabel('Count')
+    plt.grid()
+    plt.show()
+
+
+def display_digits_distribution(data: pd.DataFrame):
+    """
+    Display the distribution of the frequency of numbers in the passwords,
+    then display the minimum and maximum entropy for each password length.
+    """
+    data['digits'].value_counts().sort_index().plot(kind='bar')
+    plt.title('Digits Frequency Distribution')
+    plt.xlabel('Number of Digits')
+    plt.ylabel('Count')
+    plt.grid()
+    plt.show()
+
+
+def display_entropy_function(data: pd.DataFrame):
+    """Display the distribution of the entropy of the passwords as a function of the length."""
+    data.groupby('length')['entropy'].mean().plot(kind='line')
+    plt.title('Evolution of Entropy Based on Password Length')
+    plt.xlabel('Length')
+    plt.ylabel('Entropy')
+    plt.grid()
+    plt.show()
+
+    display(data.groupby('length')['entropy'].agg(['min', 'max', 'count']))
