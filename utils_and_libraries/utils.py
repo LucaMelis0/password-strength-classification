@@ -1,5 +1,6 @@
-from utils_and_libraries.libs import pd, display, math, plt
+from utils_and_libraries.libs import np, pd, display, math, plt
 from utils_and_libraries.libs import shuffle, StandardScaler
+from utils_and_libraries.libs import accuracy_score, confusion_matrix, classification_report
 
 
 def get_data(dataset_path: str):
@@ -207,3 +208,44 @@ def display_cv_results(cross_validation_metrics: dict):
                             'KFold Iteration: n.5']
     cross_val_df.index = ['Fit Time', 'Score Time', 'Validation Score']
     display(cross_val_df)
+
+
+def get_metrics(y_test: np.ndarray, y_pred: np.ndarray):
+    """
+    Evaluate the accuracy, confusion matrix, and classification report for the given true and predicted labels.
+
+    :param y_test: the true labels.
+    :param y_pred: the predicted labels.
+    :return: the accuracy, confusion matrix, and classification report.
+    """
+    accuracy_result = accuracy_score(y_test, y_pred)
+    confusion_matrix_result = confusion_matrix(y_test, y_pred)
+    classification_report_result = classification_report(
+        y_test,
+        y_pred,
+        target_names=['weak', 'medium', 'strong'],
+        output_dict=True
+    )
+
+    return accuracy_result, confusion_matrix_result, classification_report_result
+
+
+def display_metrics(y_test: np.ndarray, y_pred: np.ndarray):
+    """
+    Display accuracy, confusion matrix, and classification report for the given true and predicted labels.
+
+    :param y_test: the true labels.
+    :param y_pred: the predicted labels.
+    """
+    accuracy, confusion_matrix_result, classification_report_result = get_metrics(y_test, y_pred)
+
+    print('Accuracy: {:.2f}%'.format(accuracy * 100))
+    plt.matshow(confusion_matrix_result, cmap='Blues')
+    plt.title('Confusion Matrix')
+    plt.colorbar()
+    plt.xlabel('Predicted')
+    plt.ylabel('True')
+    plt.show()
+
+    print('Classification Report:')
+    display(pd.DataFrame(classification_report_result).T)
