@@ -1,4 +1,5 @@
 from utils_and_libraries.libs import pd, display, math, plt
+from utils_and_libraries.libs import shuffle, StandardScaler
 
 
 def get_data(dataset_path: str):
@@ -99,7 +100,6 @@ def extract_password_features(data: pd.DataFrame):
     return pd.DataFrame.from_dict(parameters_for_each_password, orient='index')
 
 
-
 def display_strength_distribution(data: pd.DataFrame):
     """Display the distribution of the password strength in the given data."""
     data['strength'].value_counts().sort_index().plot(kind='bar')
@@ -133,3 +133,60 @@ def display_entropy_function(data: pd.DataFrame):
     plt.show()
 
     display(data.groupby('length')['entropy'].agg(['min', 'max', 'count']))
+
+
+def balance_data_samples(data: pd.DataFrame):
+    """
+    Balance the data by under-sampling the two majority classes to match the number of samples of the minority class.
+
+    :param data: the data to balance, as a Dataframe.
+    :return: the balanced data.
+    """
+    # The class with the lower number of samples is class 2, so the number of samples related to the other classes
+    # have to be equal to the number of samples of class 2
+    class_0_samples = data[data['strength'] == 0]
+    class_1_samples = data[data['strength'] == 1]
+    class_2_samples = data[data['strength'] == 2]
+
+    class_0_samples = shuffle(class_0_samples, random_state=42).iloc[:len(class_2_samples)]
+    class_1_samples = shuffle(class_1_samples, random_state=42).iloc[:len(class_2_samples)]
+
+    balanced_data = pd.concat([class_0_samples, class_1_samples, class_2_samples])
+
+    # Display the new distribution of the password strength
+    print("New, balanced label distribution: ")
+    display_strength_distribution(balanced_data)
+
+    return balanced_data
+
+
+def prepare_features(password_dataset: pd.DataFrame, balance_data: bool = True):
+    """
+    Prepare the features and labels for the classification task. If balance_data is True, this function balances the
+    data by under-sampling the two majority classes to match the number of samples of the minority class.
+    It then normalizes the features using StandardScaler.
+
+    :param password_dataset: the dataset containing the passwords.
+    :param balance_data: whether to balance the data or not.
+    :return: the features, labels, and password names.
+    """
+    # Balance the data if required
+    if balance_data:
+        data = balance_data_samples(password_dataset)
+    else:
+        data = password_dataset
+
+    # Extract passwords, features, and labels
+    passwords = data['password']
+    y = data['strength']
+    x = extract_password_features(data)
+
+    # Convert x and y from dataframes to numpy arrays
+    x = x.to_numpy()
+    y = y.to_numpy()
+
+    # Normalize the features using StandardScaler
+    scaler = StandardScaler()
+    x = scaler.fit_transform(x)
+
+    return x, y, passwords
