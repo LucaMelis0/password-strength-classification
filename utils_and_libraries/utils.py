@@ -41,8 +41,8 @@ def unique_characters_count(password: str):
 
 
 def has_repeated_char(password: str):
-    """Return True if the given password has (at least) a 3-time repeated character, False otherwise."""
-    for i in range(len(password) - 2):
+    """Return True if the given password has (at least) a 2-time repeated character, False otherwise."""
+    for i in range(len(password) - 1):
         if password[i] == password[i + 1]:
             return True
     return False
