@@ -12,7 +12,7 @@ The used classifiers are:
 2. XGBoost Classifier
 3. Neural Network (MLP)
 
-The used dataset is the Password Strength dataset from Kaggle. The dataset contains more than 650000 passwords with 
+The used dataset is the Password Strength Dataset from Kaggle. It contains more than 650000 passwords with 
 their corresponding strength level (from 0 to 2, depending on their reliability).
 
 Once installed the requirements and retrieved the dataset, the program will extract the features from each password and 
@@ -22,13 +22,13 @@ Once the features are extracted, the data is preprocessed before being split int
 dataset is not balanced, the data is under-sampled, meaning that only part of these three subsets is considered, so that
 the corresponding number of samples related to each class is the same.
 
-After the data preprocessing phase, it is split into training and test sets; therefore, K-Fold cross-validation is 
-implemented in order to assess the performance of the classifiers. The performance is thus evaluated considering the 
+After the preprocessing phase, the data is split into training and test sets; therefore, K-Fold cross-validation is 
+implemented in order to assess the performance of the classifiers. The performance is evaluated considering the 
 accuracy, fit time and prediction time on the validation set, different for each iteration of K-Fold.
 
-Finally, the cross-validation is performed, the program will then train the classifiers on the training set and test them on
+Finally, after cross-validation has been performed, the program will then train the classifiers on the training set and test them on
 the test set. The performance of the classifiers is then evaluated looking at the accuracy, the confusion matrix and the
-classification report.
+classification report. New passwords, not related to the dataset, are also classified.
 
 ### Dependencies
 
